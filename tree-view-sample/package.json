@@ -106,6 +106,14 @@
 				}
 			},
 			{
+				"command": "ftpExplorer.refresh2",
+				"title": "Refresh2",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
 				"command": "ftpExplorer.openFtpResource",
 				"title": "Open FTP Resource"
 			},
@@ -177,6 +185,11 @@
 				},
 				{
 					"command": "ftpExplorer.refresh",
+					"when": "view == ftpExplorer",
+					"group": "navigation"
+				},
+				{
+					"command": "ftpExplorer.refresh2",
 					"when": "view == ftpExplorer",
 					"group": "navigation"
 				}

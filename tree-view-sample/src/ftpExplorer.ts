@@ -160,6 +160,7 @@ export class FtpExplorer {
 		this.ftpViewer = vscode.window.createTreeView('ftpExplorer', { treeDataProvider });
 
 		vscode.commands.registerCommand('ftpExplorer.refresh', () => treeDataProvider.refresh());
+		vscode.commands.registerCommand('ftpExplorer.refresh2', () => treeDataProvider.refresh());
 		vscode.commands.registerCommand('ftpExplorer.openFtpResource', resource => this.openResource(resource));
 		vscode.commands.registerCommand('ftpExplorer.revealResource', () => this.reveal());
 	}

@@ -34,6 +34,12 @@ export class TestViewDragAndDrop implements vscode.TreeDataProvider<Node>, vscod
       dragAndDropController: this
     });
     context.subscriptions.push(view);
+
+    vscode.commands.registerCommand('testViewDragAndDrop.expandAll', () =>
+      {
+        console.log(`Expand all is clicked.`);
+      }
+    );
   }
 
   // Tree data provider

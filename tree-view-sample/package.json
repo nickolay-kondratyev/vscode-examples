@@ -147,6 +147,11 @@
 				}
 			},
 			{
+				"command": "testViewDragAndDrop.expandAll",
+				"title": "Expand All",
+				"icon": "$(expand-all)"
+			},
+			{
 				"command": "fileExplorer.openFile",
 				"title": "Open File"
 			},
@@ -188,6 +193,11 @@
 				{
 					"command": "ftpExplorer.refresh2",
 					"when": "view == ftpExplorer",
+					"group": "navigation"
+				},
+				{
+					"command": "testViewDragAndDrop.expandAll",
+					"when": "view == testViewDragAndDrop",
 					"group": "navigation"
 				}
 			],

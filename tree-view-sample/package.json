@@ -50,6 +50,10 @@
 			],
 			"explorer": [
 				{
+					"id": "myView",
+					"name": "My View Name"
+				},
+				{
 					"id": "jsonOutline",
 					"name": "Json Outline",
 					"when": "jsonOutlineEnabled"

@@ -1405,24 +1405,6 @@
 	}
 
 	/**
-	 * Renderer messaging is used to communicate with a single renderer. It's
-	 * returned from {@link notebooks.createRendererMessaging}.
-	 */
-	export interface NotebookRendererMessaging<TSend = any, TReceive = TSend> {
-		/**
-		 * Events that fires when a message is received from a renderer.
-		 */
-		onDidReceiveMessage: Event<NotebookRendererMessage<TReceive>>;
-
-		/**
-		 * Sends a message to the renderer.
-		 * @param editor Editor to target with the message
-		 * @param message Message to send
-		 */
-		postMessage(editor: NotebookEditor, message: TSend): void;
-	}
-
-	/**
 	 * Represents a script that is loaded into the notebook renderer before rendering output. This allows
 	 * to provide and share functionality for notebook markup and notebook output renderers.
 	 */
@@ -1474,22 +1456,6 @@
 		asWebviewUri(localResource: Uri): Uri;
 	}
 
-	export namespace notebooks {
-
-		export function createNotebookController(id: string, viewType: string, label: string, handler?: (cells: NotebookCell[], notebook: NotebookDocument, controller: NotebookController) => void | Thenable<void>, rendererScripts?: NotebookRendererScript[]): NotebookController;
-
-		/**
-		 * Creates a new messaging instance used to communicate with a specific
-		 * renderer. The renderer only has access to messaging if `requiresMessaging`
-		 * is set to `always` or `optional` in its `notebookRenderer ` contribution.
-		 *
-		 * @see https://github.com/microsoft/vscode/issues/123601
-		 * @param rendererId The renderer ID to communicate with
-		*/
-		// todo@API can ANY extension talk to renderer or is there a check that the calling extension
-		// declared the renderer in its package.json?
-		export function createRendererMessaging<TSend = any, TReceive = TSend>(rendererId: string): NotebookRendererMessaging<TSend, TReceive>;
-	}
 
 	//#endregion
 
@@ -1960,36 +1926,6 @@
 		dispose(): void;
 	}
 
-	/**
-	 * Options given to {@link test.runTests}.
-	 */
-	export class TestRunRequest {
-		/**
-		 * Array of specific tests to run. The controllers should run all of the
-		 * given tests and all children of the given tests, excluding any tests
-		 * that appear in {@link TestRunRequest.exclude}.
-		 */
-		tests: TestItem[];
-
-		/**
-		 * An array of tests the user has marked as excluded in the editor. May be
-		 * omitted if no exclusions were requested. Test controllers should not run
-		 * excluded tests or any children of excluded tests.
-		 */
-		exclude?: TestItem[];
-
-		/**
-		 * Whether tests in this run should be debugged.
-		 */
-		debug: boolean;
-
-		/**
-		 * @param tests Array of specific tests to run.
-		 * @param exclude Tests to exclude from the run
-		 * @param debug Whether tests in this run should be debugged.
-		 */
-		constructor(tests: readonly TestItem[], exclude?: readonly TestItem[], debug?: boolean);
-	}
 
 	/**
 	 * Options given to {@link TestController.runTests}
@@ -2048,102 +1984,6 @@
 		end(): void;
 	}
 
-	/**
-	 * A test item is an item shown in the "test explorer" view. It encompasses
-	 * both a suite and a test, since they have almost or identical capabilities.
-	 */
-	export interface TestItem {
-		/**
-		 * Unique identifier for the TestItem. This is used to correlate
-		 * test results and tests in the document with those in the workspace
-		 * (test explorer). This must not change for the lifetime of the TestItem.
-		 */
-		readonly id: string;
-
-		/**
-		 * URI this TestItem is associated with. May be a file or directory.
-		 */
-		readonly uri?: Uri;
-
-		/**
-		 * A mapping of children by ID to the associated TestItem instances.
-		 */
-		//todo@API use array over es6-map
-		readonly children: ReadonlyMap<string, TestItem>;
-
-		/**
-		 * The parent of this item, given in {@link TestController.createTestItem}.
-		 * This is undefined only for the {@link TestController.root}.
-		 */
-		readonly parent?: TestItem;
-
-		/**
-		 * Indicates whether this test item may have children discovered by resolving.
-		 * If so, it will be shown as expandable in the Test Explorer  view, and
-		 * expanding the item will cause {@link TestController.resolveChildrenHandler}
-		 * to be invoked with the item.
-		 *
-		 * Default to false.
-		 */
-		canResolveChildren: boolean;
-
-		/**
-		 * Controls whether the item is shown as "busy" in the Test Explorer view.
-		 * This is useful for showing status while discovering children. Defaults
-		 * to false.
-		 */
-		busy: boolean;
-
-		/**
-		 * Display name describing the test case.
-		 */
-		label: string;
-
-		/**
-		 * Optional description that appears next to the label.
-		 */
-		description?: string;
-
-		/**
-		 * Location of the test item in its `uri`. This is only meaningful if the
-		 * `uri` points to a file.
-		 */
-		range?: Range;
-
-		/**
-		 * May be set to an error associated with loading the test. Note that this
-		 * is not a test result and should only be used to represent errors in
-		 * discovery, such as syntax errors.
-		 */
-		error?: string | MarkdownString;
-
-		/**
-		 * Whether this test item can be run by providing it in the
-		 * {@link TestRunRequest.tests} array. Defaults to `true`.
-		 */
-		runnable: boolean;
-
-		/**
-		 * Whether this test item can be debugged by providing it in the
-		 * {@link TestRunRequest.tests} array. Defaults to `false`.
-		 */
-		debuggable: boolean;
-
-		/**
-		 * Marks the test as outdated. This can happen as a result of file changes,
-		 * for example. In "auto run" mode, tests that are outdated will be
-		 * automatically rerun after a short delay. Invoking this on a
-		 * test with children will mark the entire subtree as outdated.
-		 *
-		 * Extensions should generally not override this method.
-		 */
-		invalidateResults(): void;
-
-		/**
-		 * Removes the test and its children from the tree.
-		 */
-		dispose(): void;
-	}
 
 	/**
 	 * Possible states of tests in a test run.
@@ -2173,51 +2013,6 @@
 		Warning = 1,
 		Information = 2,
 		Hint = 3
-	}
-
-	/**
-	 * Message associated with the test state. Can be linked to a specific
-	 * source range -- useful for assertion failures, for example.
-	 */
-	export class TestMessage {
-		/**
-		 * Human-readable message text to display.
-		 */
-		message: string | MarkdownString;
-
-		/**
-		 * Message severity. Defaults to "Error".
-		 */
-		severity: TestMessageSeverity;
-
-		/**
-		 * Expected test output. If given with `actualOutput`, a diff view will be shown.
-		 */
-		expectedOutput?: string;
-
-		/**
-		 * Actual test output. If given with `expectedOutput`, a diff view will be shown.
-		 */
-		actualOutput?: string;
-
-		/**
-		 * Associated file location.
-		 */
-		location?: Location;
-
-		/**
-		 * Creates a new TestMessage that will present as a diff in the editor.
-		 * @param message Message to display to the user.
-		 * @param expected Expected output.
-		 * @param actual Actual output.
-		 */
-		static diff(message: string | MarkdownString, expected: string, actual: string): TestMessage;
-
-		/**
-		 * Creates a new TestMessage instance.
-		 * @param message The message to show to the user.
-		 */
-		constructor(message: string | MarkdownString);
 	}
 
 	/**

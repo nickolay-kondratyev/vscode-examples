@@ -8,6 +8,7 @@ import { FtpExplorer } from './ftpExplorer';
 import { FileExplorer } from './fileExplorer';
 import { TestViewDragAndDrop } from './testViewDragAndDrop';
 import { TestView } from './testView';
+import { MyDataProvider } from "./myView/MyDataProvider";
 
 export function activate(context: vscode.ExtensionContext) {
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
@@ -36,6 +37,13 @@ export function activate(context: vscode.ExtensionContext) {
 	// Test View
 	new TestView(context);
 
+	console.log(`Hello world.`);
+
 	// Drag and Drop sample
 	new TestViewDragAndDrop(context);
+
+	// Activate
+	vscode.window.createTreeView('myView', {
+		treeDataProvider: new MyDataProvider()
+	});
 }

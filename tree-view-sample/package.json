@@ -108,10 +108,7 @@
 			{
 				"command": "ftpExplorer.refresh2",
 				"title": "Refresh2",
-				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
+				"icon": "$(breakpoints-activate)"
 			},
 			{
 				"command": "ftpExplorer.openFtpResource",

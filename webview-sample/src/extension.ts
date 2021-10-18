@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { Uri } from 'vscode';
 
 const cats = {
 	'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
@@ -173,83 +174,59 @@ class CatCodingPanel {
 	private _getHtmlForWebview({ webview, catGifPath, catName }: {
 		webview: vscode.Webview, catGifPath: string, catName: string,
 	}) {
+		const infoObject: any = {};
+
+		infoObject.extensionUri = this._extensionUri;
+
+		const myUri: Uri = Uri.parse("file:///usr/local/workplace/vscode-extension-samples/webview-sample");
+
 		// Local path to main script run in the webview
 		// And the uri we use to load this script in the webview
-		const scriptUri = (vscode.Uri.joinPath(this._extensionUri, 'media', 'ma in.js'))
+		const goScriptUri = (vscode.Uri.joinPath(myUri, 'media', 'go.js'))
 			.with({ 'scheme': 'vscode-resource' });
-
-		const goScriptUri = (vscode.Uri.joinPath(this._extensionUri, 'media', 'go.js'))
-			.with({ 'scheme': 'vscode-resource' });
-
-		const anotherScriptUri = (vscode.Uri.joinPath(this._extensionUri, 'media', 'another.js'))
-			.with({ 'scheme': 'vscode-resource' });
-
-
-		// Local path to css styles
-		const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css');
-		const stylesPathMainPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css');
-
-		// Uri to load styles into webview
-		const stylesResetUri = webview.asWebviewUri(styleResetPath);
-		const stylesMainUri = webview.asWebviewUri(stylesPathMainPath);
-
-		// Use a nonce to only allow specific scripts to be run
-
-		function getBorderColor(catName: string) {
-			switch (catName) {
-				case 'Coding Cat':
-					return '#076b1d';
-				case 'Compiling Cat':
-					return '#07166b';
-				case 'Testing Cat':
-					return '#6b3907';
-				default:
-					return '#ffffff';
-			}
-		}
-
-		const borderColor = getBorderColor(catName);
 
 		return `<!DOCTYPE html>
 			<html lang='en'>
 			<style>
+				div{
+					margin: 5px;
+				}
+				
         .has-border {
-         border-style: solid; 
-         border-width: thick; 
-         border-color: ${borderColor};
+         border-style: solid;
+         border-width: thick;
+         border-color: darkgreen;
+         padding: 5px;
+         border-radius: 5px;
+        }
+
+        .has-info-border {
+         border-style: solid;
+         border-width: medium;
+         border-color: white;
          padding: 5px;
          border-radius: 5px;
         }
       </style>
+
 			<head>
 				<meta charset='UTF-8'>
 
 				<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-
-				<link href='${stylesResetUri}' rel='stylesheet'>
-				<link href='${stylesMainUri}' rel='stylesheet'>
-
+				
 				<title>Cat Coding</title>
 			</head>
 			<body>
-		    
-		    <div class='has-border'>${catName}</div> 
-			  <h1 id='lines-of-code-counter'>0</h1>
-
-        <div id='my-div-1'>
-           Initial div-1 content
-        </div>
-  
-        <div id='my-div-2'>
+        <div class='has-border' id='my-div-2'>
            Initial div-2 content
         </div>
- 
-        <div id='my-div-3'>
-           Initial div-3 content
-        </div>
+
+        <div class='has-info-border'>
+        	InfoObject
+        	${JSON.stringify(infoObject)}
+				</div>
 			</body>
 				<script src='${goScriptUri}' />
-				<script src='${anotherScriptUri}'/>
 			</html>`;
 	}
 }

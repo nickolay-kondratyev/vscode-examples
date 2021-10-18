@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { Uri } from 'vscode';
 
 const cats = {
 	'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
@@ -41,14 +40,9 @@ function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 		enableScripts: true,
 
 		// And restrict the webview to only loading content from our extension's `media` directory.
-		localResourceRoots: [
-			vscode.Uri.joinPath(extensionUri, 'media'),
-			WEB_VIEW_MEDIA_URI
-		]
+		localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
 	};
 }
-
-const WEB_VIEW_MEDIA_URI = Uri.parse("file:///usr/local/workplace/vscode-extension-samples/webview-media/media");
 
 /**
  * Manages cat coding webview panels
@@ -179,63 +173,25 @@ class CatCodingPanel {
 	private _getHtmlForWebview({ webview, catGifPath, catName }: {
 		webview: vscode.Webview, catGifPath: string, catName: string,
 	}) {
-		const infoObject: any = {};
+		const div1Modifier = (vscode.Uri.joinPath(this._extensionUri, 'media', 'div-1-modifier.js'))
+			.with({ 'scheme': 'vscode-resource' });
 
-		infoObject.extensionUri = this._extensionUri;
-
-		/**
-		 *  */
-		const webviewMedia: Uri = WEB_VIEW_MEDIA_URI;
-
-		const workspaceUri: Uri = Uri.parse("file:///usr/local/workplace/vscode-extension-samples/webview-sample/media");
-
-		// Local path to main script run in the webview
-		// And the uri we use to load this script in the webview
-		const goScriptUri = (vscode.Uri.joinPath(webviewMedia,  'go.js'))
+		const div2Modifier = (vscode.Uri.joinPath(this._extensionUri, 'media', 'div-2-modifier.js'))
 			.with({ 'scheme': 'vscode-resource' });
 
 		return `<!DOCTYPE html>
 			<html lang='en'>
-			<style>
-				div{
-					margin: 5px;
-				}
-				
-        .has-border {
-         border-style: solid;
-         border-width: thick;
-         border-color: darkgreen;
-         padding: 5px;
-         border-radius: 5px;
-        }
-
-        .has-info-border {
-         border-style: solid;
-         border-width: medium;
-         border-color: white;
-         padding: 5px;
-         border-radius: 5px;
-        }
-      </style>
-
-			<head>
-				<meta charset='UTF-8'>
-
-				<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-				
-				<title>Cat Coding</title>
-			</head>
 			<body>
-        <div class='has-border' id='my-div-2'>
+        <div id='my-div-1'>
+           Initial div-1 content
+        </div>
+  
+        <div id='my-div-2'>
            Initial div-2 content
         </div>
-
-        <div class='has-info-border'>
-        	InfoObject
-        	${JSON.stringify(infoObject)}
-				</div>
 			</body>
-				<script src='${goScriptUri}' />
+			  <script src='${div1Modifier}' />
+			  <script src='${div2Modifier}'/>
 			</html>`;
 	}
 }

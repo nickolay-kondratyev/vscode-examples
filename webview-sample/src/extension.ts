@@ -174,10 +174,16 @@ class CatCodingPanel {
     webview: vscode.Webview, catGifPath: string, catName: string,
   }) {
     // Local path to main script run in the webview
-    const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'ma in.js');
-
     // And the uri we use to load this script in the webview
-    const scriptUri = (scriptPathOnDisk).with({'scheme': 'vscode-resource'});
+    const scriptUri = (vscode.Uri.joinPath(this._extensionUri, 'media', 'ma in.js'))
+      .with({'scheme': 'vscode-resource'});
+
+    const goScriptUri = (vscode.Uri.joinPath(this._extensionUri, 'media', 'go.js'))
+      .with({'scheme': 'vscode-resource'});
+
+    const anotherScriptUri = (vscode.Uri.joinPath(this._extensionUri, 'media', 'another.js'))
+      .with({'scheme': 'vscode-resource'});
+
 
     // Local path to css styles
     const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css');
@@ -188,18 +194,35 @@ class CatCodingPanel {
     const stylesMainUri = webview.asWebviewUri(stylesPathMainPath);
 
     // Use a nonce to only allow specific scripts to be run
-    const nonce = getNonce();
+
+    function getBorderColor(catName: string) {
+      switch (catName) {
+        case "Coding Cat":
+          return '#076b1d';
+        case "Compiling Cat":
+          return '#07166b';
+        case "Testing Cat":
+          return '#6b3907';
+        default:
+          return '#ffffff';
+      }
+    }
+
+    const borderColor = getBorderColor(catName);
 
     return `<!DOCTYPE html>
 			<html lang="en">
+			<style>
+        .has-border {
+         border-style: solid; 
+         border-width: thick; 
+         border-color: ${borderColor};
+         padding: 5px;
+         border-radius: 5px;
+        }
+      </style>
 			<head>
 				<meta charset="UTF-8">
-
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -209,20 +232,24 @@ class CatCodingPanel {
 				<title>Cat Coding</title>
 			</head>
 			<body>
-				<img src="${catGifPath}" width="300" />
-				<h1 id="lines-of-code-counter">0</h1>
+		    
+		    <div class="has-border">${catName}</div> 
+			  <h1 id="lines-of-code-counter">0</h1>
 
-<!--				<script nonce="${nonce}" src="${scriptUri}"></script>-->
+        <div id="my-div-1">
+           Initial div-1 content
+        </div>
+  
+        <div id="my-div-2">
+           Initial div-2 content
+        </div>
+ 
+        <div id="my-div-3">
+           Initial div-3 content
+        </div>
 			</body>
+			  <script src="${anotherScriptUri}"/>
+	      <script src="${goScriptUri}" />
 			</html>`;
   }
-}
-
-function getNonce() {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < 32; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
 }

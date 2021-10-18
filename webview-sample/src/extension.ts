@@ -181,7 +181,7 @@ class CatCodingPanel {
 	}) {
 		const infoObject: any = {};
 
-		infoObject.extensionUri = this._extensionUri;
+	//	infoObject.extensionUri = this._extensionUri;
 
 		/**
 		 *  */
@@ -193,6 +193,8 @@ class CatCodingPanel {
 		// And the uri we use to load this script in the webview
 		const goScriptUri = (vscode.Uri.joinPath(webviewMedia,  'go.js'))
 			.with({ 'scheme': 'vscode-resource' });
+
+		infoObject.srcOfGoScript = goScriptUri;
 
 		return `<!DOCTYPE html>
 			<html lang='en'>
@@ -231,7 +233,7 @@ class CatCodingPanel {
         </div>
 
         <div class='has-info-border'>
-        	InfoObject
+        	InfoObject:
         	${JSON.stringify(infoObject)}
 				</div>
 			</body>

@@ -18,6 +18,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onView:myView",
 		"onView:nodeDependencies",
 		"onView:ftpExplorer",
 		"onView:jsonOutline",
@@ -156,6 +157,11 @@
 				"icon": "$(expand-all)"
 			},
 			{
+				"command": "myView.expandAll",
+				"title": "Expand All",
+				"icon": "$(expand-all)"
+			},
+			{
 				"command": "fileExplorer.openFile",
 				"title": "Open File"
 			},
@@ -202,6 +208,11 @@
 				{
 					"command": "testViewDragAndDrop.expandAll",
 					"when": "view == testViewDragAndDrop",
+					"group": "navigation"
+				},
+				{
+					"command": "myView.expandAll",
+					"when": "view == myView",
 					"group": "navigation"
 				}
 			],

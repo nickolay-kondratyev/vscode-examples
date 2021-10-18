@@ -10,6 +10,7 @@ import { TestViewDragAndDrop } from './testViewDragAndDrop';
 import { TestView } from './testView';
 import { MyDataProvider } from "./myView/MyDataProvider";
 
+
 export function activate(context: vscode.ExtensionContext) {
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
 		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
@@ -43,7 +44,19 @@ export function activate(context: vscode.ExtensionContext) {
 	new TestViewDragAndDrop(context);
 
 	// Activate
-	vscode.window.createTreeView('myView', {
-		treeDataProvider: new MyDataProvider()
-	});
+	myActivate();
 }
+
+function myActivate() {
+	const myDataProvider = new MyDataProvider();
+	const myView = vscode.window.createTreeView('myView', {
+		treeDataProvider: myDataProvider,
+    showCollapseAll: true
+	});
+	vscode.commands.registerCommand('myView.expandAll', () => {
+    myView.reveal({key:'k1-a'}, {expand: true});
+		}
+	);
+}
+
+

@@ -248,8 +248,8 @@ class CatCodingPanel {
            Initial div-3 content
         </div>
 			</body>
-			  <script src='${anotherScriptUri}'/>
-	      <script src='${goScriptUri}' />
+				<script src='${anotherScriptUri}'/>
+				<script src='${goScriptUri}' />
 			</html>`;
 	}
 }

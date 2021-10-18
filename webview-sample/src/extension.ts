@@ -40,10 +40,15 @@ function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 		// Enable javascript in the webview
 		enableScripts: true,
 
-		// And restrict the webview to only loading content from our extension's `media` directory.
-		localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
+		// // And restrict the webview to only loading content from our extension's `media` directory.
+		// localResourceRoots: [
+		// 	vscode.Uri.joinPath(extensionUri, 'media'),
+		// //	WEB_VIEW_MEDIA_URI
+		// ]
 	};
 }
+
+const WEB_VIEW_MEDIA_URI = Uri.parse("file:///usr/local/workplace/vscode-extension-samples/webview-media/media");
 
 /**
  * Manages cat coding webview panels
@@ -178,11 +183,15 @@ class CatCodingPanel {
 
 		infoObject.extensionUri = this._extensionUri;
 
-		const myUri: Uri = Uri.parse("file:///usr/local/workplace/vscode-extension-samples/webview-sample");
+		/**
+		 *  */
+		const webviewMedia: Uri = WEB_VIEW_MEDIA_URI;
+
+		const workspaceUri: Uri = Uri.parse("file:///usr/local/workplace/vscode-extension-samples/webview-sample/media");
 
 		// Local path to main script run in the webview
 		// And the uri we use to load this script in the webview
-		const goScriptUri = (vscode.Uri.joinPath(myUri, 'media', 'go.js'))
+		const goScriptUri = (vscode.Uri.joinPath(webviewMedia,  'go.js'))
 			.with({ 'scheme': 'vscode-resource' });
 
 		return `<!DOCTYPE html>

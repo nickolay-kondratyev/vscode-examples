@@ -163,10 +163,13 @@ class CatCodingPanel {
 
 	private _updateForCat(webview: vscode.Webview, catName: keyof typeof cats) {
 		this._panel.title = catName;
-		this._panel.webview.html = this._getHtmlForWebview(webview, cats[catName]);
+		this._panel.webview.html = this._getHtmlForWebview({
+			webview: webview,
+			catName,
+			catGifPath: cats[catName]});
 	}
 
-	private _getHtmlForWebview(webview: vscode.Webview, catGifPath: string) {
+	private _getHtmlForWebview({webview, catGifPath, catName}: {  webview: vscode.Webview, catGifPath: string,catName: string, }) {
 		// Local path to main script run in the webview
 		const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'ma in.js');
 
@@ -206,7 +209,7 @@ class CatCodingPanel {
 				<img src="${catGifPath}" width="300" />
 				<h1 id="lines-of-code-counter">0</h1>
 
-				<script nonce="${nonce}" src="${scriptUri}"></script>
+<!--				<script nonce="${nonce}" src="${scriptUri}"></script>-->
 			</body>
 			</html>`;
 	}
